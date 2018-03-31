@@ -1,24 +1,16 @@
 #include <iostream>
-#include <time.h>
-///
+#include <cstdlib>
+#include <ctime>
+
+
 using namespace std;
 
-int checkSmart(int times, int size);
 int checkPrimitive(int times, int size);
-
-void main() {
-	int primitvePlayerWins = 0, smartPlayerWins = 0;
-	primitvePlayerWins = checkPrimitive(1000, 3);
-	smartPlayerWins = checkSmart(1000, 3);
-	cout << "Primitive player won : " << primitvePlayerWins << " times" << endl;
-	cout << "Smart player won : " << smartPlayerWins << " times" << endl;
-	system("pause");
+int checkSmart(int times, int size);
 
 
-}
-////
 
-int* buildPlayBoard(int size) {
+int* buildPlayBoard(int size) {  
 	int *arr;
 	int car;
 	arr = new int[size];
@@ -34,7 +26,7 @@ int* buildPlayBoard(int size) {
 bool primitiveMethod(int *arr, int size) {
 	srand((unsigned)time(0));
 
-	int pick = rand() % size + 1;
+	int pick = rand() % size + 1;  // choose a door and dont change
 	if (arr[pick] == 1) {
 
 		return true;
@@ -46,17 +38,20 @@ bool primitiveMethod(int *arr, int size) {
 
 bool smartMethod(int *arr, int size) {
 	srand((unsigned)time(0));
-	int pick = rand() % size + 1;
-	int secondPick = rand() % size + 1;
-	int montyPick = rand() % size + 1;
-	while (arr[secondPick] != 1 && secondPick != pick) {
-		secondPick = rand() % size + 1;
-	}
-	while (arr[montyPick] != 1) {
+	int firstPick; 
+	int secondPick;
+	int montyPick;
+
+	firstPick = secondPick = montyPick = rand() % size + 1;
+
+
+	while (arr[montyPick] != 1 && montyPick != firstPick){
 		montyPick = rand() % size + 1;
 	}
-	pick = montyPick;
-	if (arr[pick] == 1) {
+	while((secondPick!=montyPick)&&(secondPick!=firstPick)){   // the player is changing to another door
+	secondPick = rand() % size + 1;
+	}
+	if (arr[secondPick] == 1) {
 		return true;
 	}
 	else {
@@ -67,8 +62,8 @@ bool smartMethod(int *arr, int size) {
 int checkPrimitive(int times, int size) {
 	int count = 0;
 	int *arr;
-	arr = buildPlayBoard(size);
 	for (int i = 0; i < times; i++) {
+		arr = buildPlayBoard(size);
 		if (primitiveMethod(arr, size) == true) {
 			count++;
 		}
@@ -79,15 +74,27 @@ int checkPrimitive(int times, int size) {
 int checkSmart(int times, int size) {
 	int count = 0;
 	int *arr;
-	arr = buildPlayBoard(size);
 	for (int i = 0; i < times; i++) {
+		arr = buildPlayBoard(size);
 		if (smartMethod(arr, size) == true) {
 			count++;
 		}
 	}
 	return count;
 }
-//
+
+void main() {
+	srand((unsigned)time(0));
+	int times = 1000;
+	int size = 3;
+	int	primitvePlayerWins =  checkPrimitive(times, size); 
+	int	smartPlayerWins = checkSmart(times , size);
+
+	cout << "Primitive player won : " << primitvePlayerWins << " times" << endl;
+	cout << "Smart player won : " << smartPlayerWins << " times" << endl;
+	system("pause");
+
+}
 
 
 
